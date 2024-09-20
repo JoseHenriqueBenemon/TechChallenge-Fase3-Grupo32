@@ -1,6 +1,16 @@
 import { useState, useEffect } from 'react';
 import { createPost, updatePost } from '../services/PostService';
 
+import { 
+  Container,
+  Heading,
+  Form,
+  Input,
+  TextArea,
+  ButtonGroup,
+  Button
+} from '../styles/PostForm.styled';
+
 const PostForm = ({ selectedPost, refreshPosts, clearSelection }) => {
   const [post, setPost] = useState({ title: '', content: '' });
 
@@ -36,29 +46,33 @@ const PostForm = ({ selectedPost, refreshPosts, clearSelection }) => {
   };
 
   return (
-    <div>
-      <h2>{post.id ? 'Edit Post' : 'Create Post'}</h2>
-      <form onSubmit={handleSubmit}>
-        <input
+    <Container>
+      <Heading>{post.id ? 'Edit Post' : 'Create Post'}</Heading>
+      <Form onSubmit={handleSubmit}>
+        <Input
           name="title"
           value={post.title}
           onChange={handleChange}
           placeholder="Title"
           required
         />
-        <br />
-        <textarea
+        <TextArea
           name="content"
           value={post.content}
           onChange={handleChange}
           placeholder="Content"
           required
-        ></textarea>
-        <br />
-        <button type="submit">{post.id ? 'Update' : 'Create'}</button>
-        {post.id && <button onClick={clearSelection}>Cancel</button>}
-      </form>
-    </div>
+        ></TextArea>
+        <ButtonGroup>
+          <Button type="submit">{post.id ? 'Update' : 'Create'}</Button>
+          {post.id && (
+            <Button type="button" cancel onClick={clearSelection}>
+              Cancel
+            </Button>
+          )}
+        </ButtonGroup>
+      </Form>
+    </Container>
   );
 };
 

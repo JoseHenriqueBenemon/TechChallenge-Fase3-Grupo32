@@ -1,8 +1,19 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api/post';
+const API_URL = 'http://localhost:3000/post';
 
-export const getPosts = () => axios.get(API_URL);
-export const createPost = (post) => axios.post(API_URL, post);
-export const updatePost = (id, post) => axios.put(`${API_URL}/${id}`, post);
-export const deletePost = (id) => axios.delete(`${API_URL}/${id}`);
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+};
+
+// CRUD operations for posts
+
+export const getPosts = () => axios.get(API_URL, getAuthHeaders());
+export const createPost = (post) => axios.post(API_URL, post, getAuthHeaders());
+export const updatePost = (id, post) =>
+  axios.put(`${API_URL}/${id}`, post, getAuthHeaders());
+export const deletePost = (id) =>
+  axios.delete(`${API_URL}/${id}`, getAuthHeaders());

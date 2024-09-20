@@ -1,6 +1,16 @@
 import { useEffect, useState } from 'react';
 import { getPosts, deletePost } from '../services/PostService';
 
+import {
+  Container,
+  Heading,
+  PostItem,
+  Title,
+  Content,
+  ButtonGroup,
+  Button
+ } from '../styles/PostList.styled';
+
 const PostList = ({ selectPost }) => {
   const [posts, setPosts] = useState([]);
 
@@ -21,18 +31,21 @@ const PostList = ({ selectPost }) => {
   };
 
   return (
-    <div>
-      <h2>Posts</h2>
-      <ul>
-        {posts.map((post) => (
-          <li key={post.id}>
-            {post.title}{' '}
-            <button onClick={() => selectPost(post)}>Edit</button>{' '}
-            <button onClick={() => handleDelete(post.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Container>
+      <Heading>Posts</Heading>
+      {posts.map((post) => (
+        <PostItem key={post.id}>
+          <Title>{post.title}</Title>
+          <Content>{post.content}</Content>
+          <ButtonGroup>
+            <Button onClick={() => selectPost(post)}>Edit</Button>
+            <Button delete onClick={() => handleDelete(post.id)}>
+              Delete
+            </Button>
+          </ButtonGroup>
+        </PostItem>
+      ))}
+    </Container>
   );
 };
 
