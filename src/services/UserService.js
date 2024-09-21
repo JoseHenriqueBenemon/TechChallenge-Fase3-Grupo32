@@ -1,8 +1,8 @@
 import axios from 'axios';
+import { handleErrorResponse } from '../utils/errorHandler';
 
 const API_URL = 'http://localhost:3000/api/users';
 
-// Function to get the token from localStorage
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
   return {
@@ -10,21 +10,34 @@ const getAuthHeaders = () => {
   };
 };
 
-// Authentication function (signIn)
-export const signIn = (credentials) => axios.post(`${API_URL}/signin`, credentials);
+const ManualAuthHeaders = (token) => {
+  return {
+    headers: {Authorization: `Bearer ${token}`}
+  }
+}
 
-// CRUD operations for users
+export const signIn = async (credentials) => {
+  const response = await axios.post(`${API_URL}/signin`, credentials);
+  const { token } = response.data;
+  
+  try {
+    await axios.get(API_URL, ManualAuthHeaders(token));
 
-// Get all users
+    return {data: { ...response.data,  role: "Teacher" } };
+  } catch (error) {
+    if (error.status === 403) {
+      return {data: { ...response.data,  role: "Student" } }
+    } else {
+      handleErrorResponse(error)
+    }
+  }
+  
+
+};
+
 export const getUsers = () => axios.get(API_URL, getAuthHeaders());
-
-// Create a new user
 export const createUser = (user) => axios.post(API_URL, user, getAuthHeaders());
-
-// Update a user
 export const updateUser = (id, user) =>
   axios.put(`${API_URL}/${id}`, user, getAuthHeaders());
-
-// Delete a user
 export const deleteUser = (id) =>
   axios.delete(`${API_URL}/${id}`, getAuthHeaders());

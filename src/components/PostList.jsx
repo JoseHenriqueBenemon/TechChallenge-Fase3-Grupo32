@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getPosts, deletePost } from '../services/PostService';
+import { handleErrorResponse } from '../utils/errorHandler';
 
 import {
   Container,
@@ -11,8 +13,10 @@ import {
   Button
  } from '../styles/PostList.styled';
 
-const PostList = ({ selectPost }) => {
+ const PostList = ({ selectPost }) => {
   const [posts, setPosts] = useState([]);
+  const navigate = useNavigate();
+  const role = localStorage.getItem('role');
 
   useEffect(() => {
     refreshPosts();
@@ -21,13 +25,17 @@ const PostList = ({ selectPost }) => {
   const refreshPosts = () => {
     getPosts()
       .then((response) => setPosts(response.data))
-      .catch((error) => console.error('Error fetching posts:', error));
+      .catch((error) => {
+        handleErrorResponse(error);
+      }); 
   };
 
   const handleDelete = (id) => {
     deletePost(id)
       .then(() => refreshPosts())
-      .catch((error) => console.error('Error deleting post:', error));
+      .catch((error) => {
+        handleErrorResponse(error);
+      });
   };
 
   return (
@@ -36,12 +44,21 @@ const PostList = ({ selectPost }) => {
       {posts.map((post) => (
         <PostItem key={post.id}>
           <Title>{post.title}</Title>
-          <Content>{post.content}</Content>
+          <Content>{post.description}</Content>
           <ButtonGroup>
-            <Button onClick={() => selectPost(post)}>Edit</Button>
-            <Button delete onClick={() => handleDelete(post.id)}>
-              Delete
-            </Button>
+            {role !== 'Student' && (
+              <>
+                <Button onClick={() => selectPost(post)}>Edit</Button>
+                <Button delete onClick={() => handleDelete(post.id)}>
+                  Delete
+                </Button>
+              </>
+            )}
+            {role === 'Student' && (
+              <Button onClick={() => navigate(`/posts/${post.id}`)}>
+                Visualizar
+              </Button>
+            )}
           </ButtonGroup>
         </PostItem>
       ))}

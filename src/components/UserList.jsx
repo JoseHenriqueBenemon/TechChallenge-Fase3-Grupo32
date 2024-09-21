@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
-import { getUsers, deleteUser } from '../services/UserService';
-
+import { getUsers } from '../services/UserService';
 import {
-    Container,
-    Heading,
-    UserItem,
-    Email,
-    ButtonGroup,
-    Button
- } from '../styles/UserList.styled';
+  Container,
+  Heading,
+  UserItem,
+  Email,
+  ButtonGroup,
+  Button,
+} from '../styles/UserList.styled';
 
 const UserList = ({ selectUser }) => {
   const [users, setUsers] = useState([]);
+  const [error403, setError403] = useState(false);
 
   useEffect(() => {
     refreshUsers();
@@ -19,15 +19,21 @@ const UserList = ({ selectUser }) => {
 
   const refreshUsers = () => {
     getUsers()
-      .then((response) => setUsers(response.data))
-      .catch((error) => console.error('Error fetching users:', error));
+      .then((response) => {
+        setUsers(response.data);
+        setError403(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching users:', error);
+        if (error.response && error.response.status === 403) {
+          setError403(true);
+        }
+      });
   };
 
-  const handleDelete = (id) => {
-    deleteUser(id)
-      .then(() => refreshUsers())
-      .catch((error) => console.error('Error deleting user:', error));
-  };
+  if (error403) {
+    return null; 
+  }
 
   return (
     <Container>
@@ -37,9 +43,7 @@ const UserList = ({ selectUser }) => {
           <Email>{user.email}</Email>
           <ButtonGroup>
             <Button onClick={() => selectUser(user)}>Edit</Button>
-            <Button delete onClick={() => handleDelete(user.id)}>
-              Delete
-            </Button>
+            {}
           </ButtonGroup>
         </UserItem>
       ))}

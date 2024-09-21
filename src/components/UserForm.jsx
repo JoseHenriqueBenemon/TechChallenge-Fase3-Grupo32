@@ -1,46 +1,88 @@
 import { useState, useEffect } from 'react';
 import { createUser, updateUser } from '../services/UserService';
+import { handleErrorResponse } from '../utils/errorHandler';
 
 import {
     Container,
     Heading,
     Form,
     Input,
+    Select,
     ButtonGroup,
     Button
 } from '../styles/UserForm.styled';
 
 const UserForm = ({ selectedUser, refreshUsers, clearSelection }) => {
-  const [user, setUser] = useState({ email: '', password: '' });
+  const initialState = {
+    name: '',
+    email: '',
+    password: '',
+    role: 'Student', // Default role
+    registration_number: '',
+    department: '',
+  };
+
+  const [user, setUser] = useState(initialState);
 
   useEffect(() => {
     if (selectedUser) {
-      setUser({ ...selectedUser, password: '' });
+      setUser({
+        ...selectedUser,
+        password: '', // Clear password for security
+      });
     } else {
-      setUser({ email: '', password: '' });
+      setUser(initialState);
     }
   }, [selectedUser]);
 
   const handleChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    setUser((prevUser) => ({
+      ...prevUser,
+      [name]: value,
+    }));
+
+    // Reset fields when role changes
+    if (name === 'role') {
+      setUser((prevUser) => ({
+        ...prevUser,
+        registration_number: '',
+        department: '',
+      }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Exclude fields based on role
+    const userData = { ...user };
+
+    if (user.role === 'Teacher') {
+      delete userData.registration_number;
+    } else if (user.role === 'Student') {
+      delete userData.department;
+    }
+
     if (user.id) {
-      updateUser(user.id, user)
+      updateUser(user.id, userData)
         .then(() => {
           refreshUsers();
           clearSelection();
         })
-        .catch((error) => console.error('Error updating user:', error));
+        .catch((error) => {
+          handleErrorResponse(error);
+        });
     } else {
-      createUser(user)
+      createUser(userData)
         .then(() => {
           refreshUsers();
-          setUser({ email: '', password: '' });
+          setUser(initialState);
         })
-        .catch((error) => console.error('Error creating user:', error));
+        .catch((error) => {
+          handleErrorResponse(error);
+        });
     }
   };
 
@@ -48,6 +90,13 @@ const UserForm = ({ selectedUser, refreshUsers, clearSelection }) => {
     <Container>
       <Heading>{user.id ? 'Edit User' : 'Create User'}</Heading>
       <Form onSubmit={handleSubmit}>
+        <Input
+          name="name"
+          value={user.name}
+          onChange={handleChange}
+          placeholder="Name"
+          required
+        />
         <Input
           name="email"
           value={user.email}
@@ -64,6 +113,31 @@ const UserForm = ({ selectedUser, refreshUsers, clearSelection }) => {
           required
           type="password"
         />
+        <Select name="role" value={user.role} onChange={handleChange} required>
+          <option value="Student">Student</option>
+          <option value="Teacher">Teacher</option>
+        </Select>
+
+        {user.role === 'Student' && (
+          <Input
+            name="registration_number"
+            value={user.registration_number}
+            onChange={handleChange}
+            placeholder="Registration Number"
+            required
+          />
+        )}
+
+        {user.role === 'Teacher' && (
+          <Input
+            name="department"
+            value={user.department}
+            onChange={handleChange}
+            placeholder="Department"
+            required
+          />
+        )}
+
         <ButtonGroup>
           <Button type="submit">{user.id ? 'Update' : 'Create'}</Button>
           {user.id && (

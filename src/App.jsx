@@ -2,7 +2,8 @@ import { useState } from 'react';
 import SignIn from './components/SignIn';
 import UserManagement from './components/UserManagement';
 import PostManagement from './components/PostManagement';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import PostDetails from './components/PostDetails';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import {
   Container,
@@ -15,19 +16,23 @@ import {
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [role, setRole] = useState(null);
 
-  const handleSignIn = (token) => {
+  const handleSignIn = (token, role) => {
     localStorage.setItem('token', token);
+    localStorage.setItem('role', role);
     setToken(token);
+    setRole(role);
   };
 
   const handleSignOut = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     setToken(null);
+    setRole(null);
   };
 
   if (!token) {
-    // If not authenticated, show the SignIn component only
     return (
       <Container>
         <Header>
@@ -44,19 +49,23 @@ const App = () => {
     <Router>
       <Container>
         <Header>
-          <h1>My Application</h1>
+          <h1>Post Project</h1>
           <SignOutButton onClick={handleSignOut}>Sign Out</SignOutButton>
-          {/* Navigation Buttons */}
           <NavBar>
-            <NavButton to="/users">User Management</NavButton>
+            {localStorage.getItem("role") === 'Teacher' && (
+              <NavButton to="/users">User Management</NavButton>
+            )}
             <NavButton to="/posts">Post Management</NavButton>
           </NavBar>
         </Header>
         <ContentWrapper>
           <Routes>
-            <Route path="/" element={<Navigate to="/users" />} />
-            <Route path="/users" element={<UserManagement />} />
+            <Route path="/" element={<Navigate to="/posts" />} />
+            {localStorage.getItem("role") === 'Teacher' && (
+              <Route path="/users" element={<UserManagement />} />
+            )}
             <Route path="/posts" element={<PostManagement />} />
+            <Route path="/posts/:id" element={<PostDetails />} />
           </Routes>
         </ContentWrapper>
       </Container>

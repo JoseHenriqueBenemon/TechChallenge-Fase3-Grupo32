@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { signIn } from '../services/UserService';
+import { handleErrorResponse } from '../utils/errorHandler';
 
 import {
   Container,
@@ -22,12 +23,12 @@ const SignIn = ({ onSignIn }) => {
     e.preventDefault();
     signIn(credentials)
       .then((response) => {
-        const token = response.data.token;
-        onSignIn(token);
+        console.log(response);
+        const { token, role } = response.data;
+        onSignIn(token, role);
       })
       .catch((error) => {
-        console.error('Authentication error:', error);
-        setError('Invalid email or password');
+        handleErrorResponse(error);
       });
   };
 

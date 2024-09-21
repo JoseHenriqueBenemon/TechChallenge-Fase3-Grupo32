@@ -20,6 +20,12 @@ export const Input = styled.input`
   font-size: 16px;
 `;
 
+export const Select = styled.select`
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 16px;
+`;
+
 export const TextArea = styled.textarea`
   padding: 10px;
   margin-bottom: 15px;

@@ -1,13 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import UserForm from './UserForm';
 import UserList from './UserList';
 
 const UserManagement = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [refreshUsers, setRefreshUsers] = useState(false);
+  const [canViewUsers, setCanViewUsers] = useState(true);
 
   const refreshUsersList = () => setRefreshUsers(!refreshUsers);
   const clearUserSelection = () => setSelectedUser(null);
+
+  const role = localStorage.getItem('role');
+
+  useEffect(() => {
+    if (role !== 'Teacher') {
+      setCanViewUsers(false);
+    }
+  }, [role]);
 
   return (
     <>
@@ -16,7 +25,9 @@ const UserManagement = () => {
         refreshUsers={refreshUsersList}
         clearSelection={clearUserSelection}
       />
-      <UserList selectUser={setSelectedUser} key={refreshUsers} />
+      {canViewUsers && (
+        <UserList selectUser={setSelectedUser} key={refreshUsers} />
+      )}
     </>
   );
 };
