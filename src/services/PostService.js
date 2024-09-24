@@ -15,7 +15,6 @@ export const getPosts = async () => {
   const role = localStorage.getItem("role");
 
   try {
-    console.log(role);
     if (role === "Teacher") {
       const response = await axios.get(ADMIN_API_URL, getAuthHeaders());
       return response;

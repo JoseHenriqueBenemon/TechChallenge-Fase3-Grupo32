@@ -45,11 +45,12 @@ import {
         <PostItem key={post.id}>
           <Title>{post.title}</Title>
           <Content>{post.description}</Content>
+          <Content>{post.user.name}</Content>
           <ButtonGroup>
             {role !== 'Student' && (
               <>
                 <Button onClick={() => selectPost(post)}>Edit</Button>
-                <Button delete onClick={() => handleDelete(post.id)}>
+                <Button delete="true" onClick={() => handleDelete(post.id)}>
                   Delete
                 </Button>
               </>

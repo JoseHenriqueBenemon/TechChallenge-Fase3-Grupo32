@@ -41,10 +41,12 @@ const UserList = ({ selectUser }) => {
       {users.map((user) => (
         <UserItem key={user.id}>
           <Email>{user.email}</Email>
+          {localStorage.getItem('email') === user.email && (
           <ButtonGroup>
             <Button onClick={() => selectUser(user)}>Edit</Button>
             {}
           </ButtonGroup>
+          )}
         </UserItem>
       ))}
     </Container>

@@ -29,7 +29,7 @@ const PostForm = ({ selectedPost, refreshPosts, clearSelection }) => {
       setPost({
         ...selectedPost,
         limit_date: selectedPost.limit_date
-          ? new Date(selectedPost.limit_date).toISOString().substr(0, 10)
+          ? new Date(selectedPost.limit_date.split("/")[2], selectedPost.limit_date.split("/")[1], selectedPost.limit_date.split("/")[0]).toISOString().substr(0, 10)
           : '',
       });
     } else {
@@ -49,6 +49,10 @@ const PostForm = ({ selectedPost, refreshPosts, clearSelection }) => {
     e.preventDefault();
 
     const postData = { ...post };
+
+    // Remove the id from user, kepping throw a validation error
+    delete postData.id
+    delete postData.user
 
     if (post.id) {
       updatePost(post.id, postData)
@@ -130,7 +134,7 @@ const PostForm = ({ selectedPost, refreshPosts, clearSelection }) => {
         <ButtonGroup>
           <Button type="submit">{post.id ? 'Update' : 'Create'}</Button>
           {post.id && (
-            <Button type="button" cancel onClick={clearSelection}>
+            <Button type="button" cancel="true" onClick={clearSelection}>
               Cancel
             </Button>
           )}

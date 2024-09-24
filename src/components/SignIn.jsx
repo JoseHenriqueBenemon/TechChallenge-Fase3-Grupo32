@@ -23,9 +23,8 @@ const SignIn = ({ onSignIn }) => {
     e.preventDefault();
     signIn(credentials)
       .then((response) => {
-        console.log(response);
         const { token, role } = response.data;
-        onSignIn(token, role);
+        onSignIn(token, role, credentials.email);
       })
       .catch((error) => {
         handleErrorResponse(error);

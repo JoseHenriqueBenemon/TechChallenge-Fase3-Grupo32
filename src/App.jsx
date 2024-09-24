@@ -17,19 +17,24 @@ import {
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [role, setRole] = useState(null);
+  const [email, setEmail] = useState(null);
 
-  const handleSignIn = (token, role) => {
+  const handleSignIn = (token, role, email) => {
     localStorage.setItem('token', token);
     localStorage.setItem('role', role);
+    localStorage.setItem('email', email)
     setToken(token);
     setRole(role);
+    setEmail(email);
   };
 
   const handleSignOut = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+    localStorage.removeItem('email');
     setToken(null);
     setRole(null);
+    setEmail(null);
   };
 
   if (!token) {
