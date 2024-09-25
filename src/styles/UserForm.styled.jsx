@@ -34,12 +34,12 @@ export const ButtonGroup = styled.div`
 export const Button = styled.button`
   padding: 10px 15px;
   margin-left: 10px;
-  background-color: ${(props) => (props.cancel ? '#6c757d' : '#17a2b8')};
+  background-color: ${(props) => (props.cancel ? '#6c757d' : '#28a745')};
   color: white;
   font-size: 16px;
   border: none;
   cursor: pointer;
   &:hover {
-    background-color: ${(props) => (props.cancel ? '#5a6268' : '#138496')};
+    background-color: ${(props) => (props.cancel ? '#5a6268' : '#218838')};
   }
 `;
