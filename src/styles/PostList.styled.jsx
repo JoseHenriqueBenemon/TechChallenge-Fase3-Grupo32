@@ -40,3 +40,11 @@ export const Button = styled.button`
     background-color: ${(props) => (props.delete ? '#c82333' : '#0056b3')};
   }
 `;
+
+export const Input = styled.input`
+  padding: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+  font-size: 16px;
+  box-sizing: border-box;
+`;

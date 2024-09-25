@@ -10,11 +10,13 @@ import {
   Title,
   Content,
   ButtonGroup,
-  Button
- } from '../styles/PostList.styled';
+  Button,
+  Input,
+} from '../styles/PostList.styled';
 
- const PostList = ({ selectPost }) => {
+const PostList = ({ selectPost }) => {
   const [posts, setPosts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const role = localStorage.getItem('role');
 
@@ -27,7 +29,7 @@ import {
       .then((response) => setPosts(response.data))
       .catch((error) => {
         handleErrorResponse(error);
-      }); 
+      });
   };
 
   const handleDelete = (id) => {
@@ -38,10 +40,22 @@ import {
       });
   };
 
+  const filteredPosts = posts.filter((post) =>
+    post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    post.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Container>
       <Heading>Posts</Heading>
-      {posts.map((post) => (
+      <Input
+        type="text"
+        placeholder="Search posts..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
+      {filteredPosts.map((post) => (
         <PostItem key={post.id}>
           <Title>{post.title}</Title>
           <Content>{post.description}</Content>
