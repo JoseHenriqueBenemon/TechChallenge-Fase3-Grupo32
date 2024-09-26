@@ -13,11 +13,11 @@ O projeto usa 3 principais bibliotecas para funcionar:
 
 src/
 |
-├── assets
-├── components
-├── services
-├── styles
-├── utils
+├── assets/
+├── components/
+├── services/
+├── styles/
+├── utils/
 |
 ├── App.jsx
 └── main.jsx
