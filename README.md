@@ -11,6 +11,7 @@ O projeto usa 3 principais bibliotecas para funcionar:
 
 # Arquitetura da Aplicação
 
+```
 src/
 |
 ├── assets/
@@ -21,6 +22,7 @@ src/
 |
 ├── App.jsx
 └── main.jsx
+```
 
 Assets: Fica a logo do react que fica na aba da página.
 Components: Nesta página, todos os componentes do sistema são criados sejam eles listas, formulários, botões etc.
